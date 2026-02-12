@@ -30,7 +30,7 @@ class AltitudeEKF
 		void SetPredictedCovariance(float P00, float P11);
 		void SetProcessNoise(float accelAlt, float accelVelocity);
 		void SetMeasurementNoise(float val);
-		bool Run(float accelerationZ, float baroAltitude);
+		void Run(float accelerationZ, float baroAltitude);
 		float GetAltitude(void) const;
 };
 
