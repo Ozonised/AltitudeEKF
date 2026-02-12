@@ -29,7 +29,7 @@ class AltitudeEKF
 		void SetProcessNoise(float accelAlt, float accelVelocity);
 		void SetMeasurementNoise(float val);
 		bool Run(float accelerationZ, float baroAltitude);
-		float GetAltitude(void);
+		float GetAltitude(void) const;
 };
 
 
