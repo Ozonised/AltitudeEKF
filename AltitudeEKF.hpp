@@ -22,8 +22,10 @@ class AltitudeEKF
 		float Q[2];			// Process noise
 		float P[2][2];		// Estimated covariance
 		float R;			// Measurement noise (barometers noise)
+		float dt;
 	public:
 		AltitudeEKF();
+		void SetSamplingTime(float freq);
 		void SetPredictedState(float accelAlt, float accelVelocity);
 		void SetPredictedCovariance(float P00, float P11);
 		void SetProcessNoise(float accelAlt, float accelVelocity);

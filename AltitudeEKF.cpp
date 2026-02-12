@@ -44,3 +44,8 @@ float AltitudeEKF::GetAltitude(void) const
 {
 	return X[0];
 }
+
+void AltitudeEKF::SetSamplingTime(float freq)
+{
+	dt = (1.0f / freq);
+}
