@@ -25,11 +25,11 @@ class AltitudeEKF
 	public:
 		AltitudeEKF();
 		void SetPredictedState(float accelAlt, float accelVelocity);
-		void SetPredictedCovariance(float P00, float P11, float P22, float P33);
+		void SetPredictedCovariance(float P00, float P11);
 		void SetProcessNoise(float accelAlt, float accelVelocity);
 		void SetMeasurementNoise(float val);
-		float GetAltitude(void);
 		bool Run(float accelerationZ, float baroAltitude);
+		float GetAltitude(void);
 };
 
 
