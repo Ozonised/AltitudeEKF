@@ -74,7 +74,7 @@ void AltitudeEKF::Run(float accelerationZ, float baroAltitude)
 
 	// Measurement Prediction Covariance : S = H * Pcap * Ht + R
 	float S = Pcap[0][0] + R;
-	if (fabs(S) <= 1e-7f) S += 1e-7f;
+	if (fabs(S) <= 1e-7f) S += copysignf(1e-7f, S);
 
 	// Kalman gain: Kg = Pcap * Ht * S^-1
 	float Kg[2];
