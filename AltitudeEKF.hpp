@@ -16,8 +16,7 @@
 class AltitudeEKF
 {
 	private:
-		float Xcap[2];		// state vector/predicted state
-		float X[2];			// estimated state
+		float X[2];			// state vector
 		float Pcap[2][2];	// predicted covariance
 		float Q[2];			// Process noise
 		float P[2][2];		// Estimated covariance
@@ -26,7 +25,7 @@ class AltitudeEKF
 	public:
 		AltitudeEKF();
 		void SetSamplingTime(float freq);
-		void SetPredictedState(float accelAlt, float accelVelocity);
+		void SetStateVector(float accelAlt, float accelVelocity);
 		void SetPredictedCovariance(float P00, float P11);
 		void SetProcessNoise(float accelAlt, float accelVelocity);
 		void SetMeasurementNoise(float val);
