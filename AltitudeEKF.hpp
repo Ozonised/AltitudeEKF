@@ -22,7 +22,7 @@ class AltitudeEKF
 		float Q[2];			// Process noise
 		float P[2][2];		// Estimated covariance
 		float R;			// Measurement noise (barometers noise)
-		float dt;
+		float dt;			// sampling period
 	public:
 		AltitudeEKF();
 		void SetSamplingTime(float freq);
