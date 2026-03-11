@@ -1,4 +1,5 @@
 # Altitude EKF
+![](https://github.com/Ozonised/AltitudeEKF/blob/main/AltitudeEKFGitHub.gif)
 An extended kalman filter to combine accelerometer readings and barometer altitude to estimate altitude.
 
 # AltitudeEKF Usage Guide
