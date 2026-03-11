@@ -194,6 +194,7 @@ int main(void)
   
       float altitude = ekf.GetAltitude();
   }
+}
 ```
 
 ### Workflow
@@ -257,18 +258,21 @@ Typical strategy:
 ```cpp
 AltitudeEKF ekf;
 
-ekf.SetSamplingTime(100.0f);
-ekf.SetProcessNoise(0.0001f, 0.0001f);
-ekf.SetMeasurementNoise(0.0121f);
-
-while (1)
+int main(void)
 {
-    float accelZ = GetVerticalAcceleration();
-    float baroAlt = GetBarometerAltitude();
-
-    ekf.Run(accelZ, baroAlt);
-
-    printf("Altitude: %.2f\n", ekf.GetAltitude());
+  ekf.SetSamplingTime(100.0f);
+  ekf.SetProcessNoise(0.0001f, 0.0001f);
+  ekf.SetMeasurementNoise(0.0121f);
+  
+  while (1)
+  {
+      float accelZ = GetVerticalAcceleration();
+      float baroAlt = GetBarometerAltitude();
+  
+      ekf.Run(accelZ, baroAlt);
+  
+      printf("Altitude: %.2f\n", ekf.GetAltitude());
+  }
 }
 ```
 
