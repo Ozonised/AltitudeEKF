@@ -112,6 +112,9 @@ void AltitudeEKF::SetSamplingTime(float freq)
  *
  * @warning If acceleration is not gravity-compensated,
  *          altitude will drift significantly.
+ *
+ * @note Use Predict(float accelerationZ) and Update(float baroAltitude)
+ * 		 when accelerometer and barometer are running at different rate.
  */
 void AltitudeEKF::Run(float accelerationZ, float baroAltitude)
 {
@@ -153,3 +156,64 @@ void AltitudeEKF::Run(float accelerationZ, float baroAltitude)
 	P[1][0] = -Kg[1] * Pcap[0][0] + Pcap[1][0];	P[1][1] = -Kg[1] * Pcap[0][1] + Pcap[1][1];
 }
 
+/**
+ * @brief Executes the prediction step of the EKF.
+ *
+ * @param accelerationZ  Gravity-compensated vertical acceleration (m/s²).
+ *
+ * @warning Acceleration must be expressed in the global
+ *          vertical frame and properly gravity-compensated.
+ *          Otherwise altitude drift will occur.
+ */
+void AltitudeEKF::Predict(float accelerationZ)
+{
+	// ---- PREDICTION ---- //
+
+	// predicted altitude from acceleration
+	 X[0] += X[1] * dt + 0.5f * accelerationZ * dt * dt;
+
+	// current velocity from acceleration
+	 X[1] += accelerationZ * dt;
+
+	// Predicted Covariance: Pcap = F * P * Ft + Q
+	// Calculating Pcap = F * P * Ft:
+	Pcap[0][0] = P[0][0] + dt * P[1][0] + (P[0][1] + dt * P[1][1]) * dt;	Pcap[0][1] = P[0][1] + dt * P[1][1];
+	Pcap[1][0] = P[1][0] + dt * P[1][1];									Pcap[1][1] = P[1][1];
+
+	// Pcap = P + Q
+	Pcap[0][0] += Q[0];
+	Pcap[1][1] += Q[1];
+
+    memcpy(P, Pcap, sizeof(P));
+}
+
+/**
+ * @brief Executes the measurement (correction) step of the EKF.
+ *
+ * Corrects the predicted state using barometric altitude measurement.
+ *
+ * @param baroAltitude  Measured altitude from barometer (meters).
+ *
+ */
+void AltitudeEKF::Update(float baroAltitude)
+{
+	// ---- MEASUREMENT ---- //
+	float altError = baroAltitude - X[0];
+
+	// Measurement Prediction Covariance : S = H * Pcap * Ht + R
+	float S = Pcap[0][0] + R;
+	if (fabs(S) <= 1e-7f) S += copysignf(1e-7f, S);
+
+	// Kalman gain: Kg = Pcap * Ht * S^-1
+	float Kg[2];
+	Kg[0] = Pcap[0][0] / S;
+	Kg[1] = Pcap[1][0] / S;
+
+	// Estimated state: X = X + Kg * altError
+	X[0] += Kg[0] * altError;
+	X[1] += Kg[1] * altError;
+
+	// Estimated Covariance: P = (I2 - Kg * H) * Pcap
+	P[0][0] = (1.0f - Kg[0]) * Pcap[0][0];		P[0][1] = (1.0f - Kg[0]) * Pcap[0][1];
+	P[1][0] = -Kg[1] * Pcap[0][0] + Pcap[1][0];	P[1][1] = -Kg[1] * Pcap[0][1] + Pcap[1][1];
+}
